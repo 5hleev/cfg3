@@ -60,3 +60,83 @@ def lexer(input_text):
         raise SyntaxError('Unclosed multi-line comment. Ensure every "(comment" has a closing ")".')
 
     return tokens
+
+def parse(tokens):
+    config = {}
+    index = 0
+
+    def parse_value():
+        nonlocal index
+        if index >= len(tokens):
+            raise SyntaxError('Unexpected end of input')
+        kind, value = tokens[index]
+        if kind == 'NUMBER':
+            index += 1
+            return int(value)
+        elif kind == 'STRING':
+            index += 1
+            return value.strip("'")
+        elif kind == 'TABLE':  # Обработка таблицы
+            return parse_table()
+        else:
+            raise SyntaxError(f'Unexpected value: {value}')
+
+    def parse_table():
+        nonlocal index
+        dictionary = {}
+        if tokens[index][0] != 'TABLE':
+            raise SyntaxError('Expected TABLE')
+        index += 1
+        if tokens[index][0] != 'LPAREN':
+            raise SyntaxError('Expected ( after TABLE')
+        index += 1  # Пропустить '('
+        if tokens[index][0] != 'LBRACKET':
+            raise SyntaxError('Expected [ after ( in TABLE')
+        index += 1  # Пропустить '['
+
+        while tokens[index][0] != 'RBRACKET':
+            if tokens[index][0] == 'COMMA':  # Игнорируем запятые
+                index += 1
+                continue
+            if tokens[index][0] == 'NAME':  # Ожидаем имя ключа
+                key = tokens[index][1]
+                index += 1
+                if tokens[index][0] != 'EQUALS':  # Ожидаем равно
+                    raise SyntaxError('Expected = after key')
+                index += 1  # Пропустить '='
+                value = parse_value()  # Обрабатываем значение
+                dictionary[key] = value
+            else:
+                raise SyntaxError(f'Unexpected token in table: {tokens[index]}')
+
+        index += 1  # Пропустить ']'
+        if tokens[index][0] != 'RPAREN':
+            raise SyntaxError('Expected ) after ] in TABLE')
+        index += 1  # Пропустить ')'
+
+        return dictionary
+
+    def parse_constant():
+        nonlocal index
+        if tokens[index][0] != 'NAME':
+            raise SyntaxError('Expected a name')
+        name = tokens[index][1]
+        index += 1
+        if tokens[index][0] != 'CONST_DECL':
+            raise SyntaxError('Expected :=')
+        index += 1
+        value = parse_value()
+        if tokens[index][0] != 'SEMICOLON':
+            raise SyntaxError('Expected ; at the end of declaration')
+        index += 1
+        config[name] = value
+
+    while index < len(tokens):
+        if tokens[index][0] == 'NAME':
+            parse_constant()
+        elif tokens[index][0] == 'TABLE':
+            config["table"] = parse_table()
+        else:
+            raise SyntaxError(f"Unexpected token: {tokens[index]}")
+
+    return config
