@@ -153,3 +153,23 @@ def to_toml(config):
     toml_string = re.sub(r',\s*\]', ']', toml_string)
     toml_string = re.sub(r',\s*\}', '}', toml_string)
     return toml_string
+
+def main():
+    if len(sys.argv) > 1:
+        # Открытие файла с явной кодировкой
+        with open(sys.argv[1], 'r', encoding='utf-8') as f:
+            input_text = f.read()
+    else:
+        # Чтение из стандартного ввода
+        input_text = sys.stdin.read()
+
+    try:
+        tokens = lexer(input_text)
+        config = parse(tokens)
+        print(to_toml(config))
+    except SyntaxError as e:
+        print(f"Syntax error: {e}", file=sys.stderr)
+        sys.exit(1)
+
+if __name__ == '__main__':
+    main()
