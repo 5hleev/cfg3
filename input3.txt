@@ -1,0 +1,14 @@
+" Конфигурация IoT-устройства
+
+device_id := 'sensor_123';
+firmware_version := '1.0.2';
+
+settings := table([
+    sampling_rate = 60,
+    units = 'Celsius'
+]);
+
+network := table([
+    ssid = 'MyWiFi',
+    password = 'password123'
+]);

@@ -1,0 +1,15 @@
+" Настройки игрового уровня
+
+level_name := 'Forest Adventure';
+max_players := 4;
+
+environment := table([
+    weather = 'rainy',
+    difficulty = 'medium'
+]);
+
+enemies := table([
+    type1 = 'goblin',
+    type2 = 'orc',
+    boss = 'dragon'
+]);

@@ -1,0 +1,17 @@
+" Конфигурация веб-сервера
+
+server_name := 'example.com';
+port := 8080;
+
+routes := table([
+    home = '/',
+    about = '/about',
+    contact = '/contact'
+]);
+
+database := table([
+    host = 'localhost',
+    port = 5432,
+    username = 'admin',
+    password = 'secret'
+]);
