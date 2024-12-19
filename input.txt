@@ -1,14 +1,12 @@
 " Это однострочный комментарий
 
-name := 'Alice'
-age := 30
+name := 'Alice';
+age := 30;
 
-table_example := table([
+example := table([
     key1 = 'value1',
     key2 = 123,
-    nested_table = table([
+    nested = table([
         inner_key = 'inner_value'
     ])
-])
-
-simple_calculation := ?{age + 5}
+]);
