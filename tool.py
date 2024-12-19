@@ -140,3 +140,16 @@ def parse(tokens):
             raise SyntaxError(f"Unexpected token: {tokens[index]}")
 
     return config
+
+def evaluate_expression(expr, config):
+    # Ваш код для обработки выражений
+    pass
+
+# Преобразование в TOML
+def to_toml(config):
+    import toml
+    toml_string = toml.dumps(config)
+    # Удаление лишних запятых в массивах, если они есть
+    toml_string = re.sub(r',\s*\]', ']', toml_string)
+    toml_string = re.sub(r',\s*\}', '}', toml_string)
+    return toml_string
