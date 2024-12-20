@@ -2,6 +2,7 @@ import re
 import sys
 import toml
 
+# Класс для обработки синтаксических ошибок
 class SyntaxError(Exception):
     pass
 
@@ -12,7 +13,7 @@ def lexer(input_text):
         ('LBRACKET', r'\['),  # Открывающая квадратная скобка
         ('RBRACKET', r'\]'),  # Закрывающая квадратная скобка
         ('EQUALS', r'='),  # Равно
-        ('NAME', r'[a-zA-Z_][a-zA-Z0-9_]*'),
+        ('NAME', r'[a-zA-Z][a-zA-Z0-9]*'),  # Имена (буквы + цифры)
         ('NUMBER', r'\d+'),  # Числа
         ('STRING', r"'[^']*'"),  # Строки
         ('CONST_DECL', r':='),  # Объявление константы
@@ -28,7 +29,6 @@ def lexer(input_text):
     ]
     tok_regex = '|'.join(f'(?P<{pair[0]}>{pair[1]})' for pair in token_specification)
     tokens = []
-    in_multiline_comment = False
     line_number = 1
 
     for mo in re.finditer(tok_regex, input_text):
@@ -36,16 +36,7 @@ def lexer(input_text):
         value = mo.group()
 
         if kind == 'SKIP':
-            line_number += value.count('\\n')
-            continue
-
-        if in_multiline_comment:
-            if kind == 'MCOMMENT_END':
-                in_multiline_comment = False
-            continue
-
-        if kind == 'MCOMMENT_START':
-            in_multiline_comment = True
+            line_number += value.count('\n')
             continue
 
         if kind == 'COMMENT':
@@ -55,9 +46,6 @@ def lexer(input_text):
             raise SyntaxError(f'Unexpected character: {value} at line {line_number}')
 
         tokens.append((kind, value))
-
-    if in_multiline_comment:
-        raise SyntaxError('Unclosed multi-line comment. Ensure every "(comment" has a closing ")".')
 
     return tokens
 
@@ -76,6 +64,8 @@ def parse(tokens):
         elif kind == 'STRING':
             index += 1
             return value.strip("'")
+        elif kind == 'EXPR_START':  # Обработка ?{имя}
+            return evaluate_expression()
         elif kind == 'TABLE':  # Обработка таблицы
             return parse_table()
         else:
@@ -131,6 +121,20 @@ def parse(tokens):
         index += 1
         config[name] = value
 
+    def evaluate_expression():
+        nonlocal index
+        index += 1  # Пропустить ?{
+        if tokens[index][0] != 'NAME':
+            raise SyntaxError('Expected a name in expression')
+        name = tokens[index][1]
+        index += 1
+        if tokens[index][0] != 'EXPR_END':
+            raise SyntaxError('Expected } at the end of expression')
+        index += 1  # Пропустить }
+        if name not in config:
+            raise SyntaxError(f'Undefined constant: {name}')
+        return config[name]
+
     while index < len(tokens):
         if tokens[index][0] == 'NAME':
             parse_constant()
@@ -141,26 +145,17 @@ def parse(tokens):
 
     return config
 
-def evaluate_expression(expr, config):
-    # Ваш код для обработки выражений
-    pass
-
 # Преобразование в TOML
 def to_toml(config):
-    import toml
     toml_string = toml.dumps(config)
-    # Удаление лишних запятых в массивах, если они есть
-    toml_string = re.sub(r',\s*\]', ']', toml_string)
-    toml_string = re.sub(r',\s*\}', '}', toml_string)
     return toml_string
 
+# Основная функция
 def main():
     if len(sys.argv) > 1:
-        # Открытие файла с явной кодировкой
         with open(sys.argv[1], 'r', encoding='utf-8') as f:
             input_text = f.read()
     else:
-        # Чтение из стандартного ввода
         input_text = sys.stdin.read()
 
     try:

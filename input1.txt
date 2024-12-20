@@ -1,11 +1,11 @@
 " Конфигурация веб-сервера
 
-server_name := 'example.com';
+servername := 'example.com';
 port := 8080;
 
 routes := table([
     home = '/',
-    about = '/about',
+    about = ?{servername},
     contact = '/contact'
 ]);
 

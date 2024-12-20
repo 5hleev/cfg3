@@ -1,7 +1,7 @@
 " Настройки игрового уровня
 
-level_name := 'Forest Adventure';
-max_players := 4;
+levelname := 'Forest Adventure';
+maxplayers := 4;
 
 environment := table([
     weather = 'rainy',

@@ -1,10 +1,10 @@
 " Конфигурация IoT-устройства
 
-device_id := 'sensor_123';
-firmware_version := '1.0.2';
+deviceid := 'sensor123';
+firmwareversion := '1.0.2';
 
 settings := table([
-    sampling_rate = 60,
+    samplingrate = 60,
     units = 'Celsius'
 ]);
 
