@@ -2,7 +2,7 @@ import re
 import sys
 import toml
 
-# Класс для обработки синтаксических ошибок
+# Класс обработки синтаксических ошибок
 class SyntaxError(Exception):
     pass
 
