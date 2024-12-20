@@ -30,10 +30,13 @@ table([
 
 ![image](https://github.com/user-attachments/assets/18053176-eeea-4348-84ed-6dd28a598a18)
 
-![image](https://github.com/user-attachments/assets/3479dae6-d173-4ca4-88c0-b13b36750177)
+![image](https://github.com/user-attachments/assets/10b4222b-3b36-467c-8d78-bee197438038)
+![image](https://github.com/user-attachments/assets/cbe433ce-ebee-429b-b316-65a4f3f7ba6d)
 
+![image](https://github.com/user-attachments/assets/7f9ce697-3146-463a-966c-2d1c94b759b2)
 ![image](https://github.com/user-attachments/assets/167da578-26e2-497a-a775-7e953c516778)
 
+![image](https://github.com/user-attachments/assets/2165fd5c-efe3-48b4-a50b-34364e647820)
 ![image](https://github.com/user-attachments/assets/0f854bd8-f3f9-4056-bacf-30b1fe88020d)
 
 
